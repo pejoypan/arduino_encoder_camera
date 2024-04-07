@@ -20,25 +20,26 @@ int START_last_state = LOW;
 
 const int START_CHECK_should_be = HIGH;
 
-const unsigned int debounce_delay = 5;  // us
+const unsigned long debounce_delay = 5;  // us
 unsigned long ENCODER_last_change_time = 0;
 unsigned long START_last_change_time = 0;
 
 const unsigned int T_deg = 6;           // 360 / 60 = 6
-unsigned int T;
+unsigned long T;
+unsigned long T_counter = 0;
 const int pulse_per_deg = 100;          // single-phase, one-fold freq
-const int high_keep_pulse_count = 123;
+const unsigned long high_keep_pulse_count = 123;
 
-unsigned int delay_camera1_on = 43;     // (43) should configure
-unsigned int delay_camera1_off;         // (43+123=166)
+unsigned long delay_camera1_on = 43;     // (43) should configure
+unsigned long delay_camera1_off;         // (43+123=166)
 
 const int camera_1_to_2_deg = 31;       // probably won't change    
-unsigned int delay_camera2_on;          // (43+100=143) 
-unsigned int delay_camera2_off;         // (143+123=266)
+unsigned long delay_camera2_on;          // (43+100=143) 
+unsigned long delay_camera2_off;         // (143+123=266)
 
 const int camera_1_to_output_deg = 105; // probably won't change    
-unsigned int delay_output_on;           // (43+300=343)
-unsigned int delay_output_off;          // (343+123=566)
+unsigned long delay_output_on;           // (43+300=343)
+unsigned long delay_output_off;          // (343+123=566)
 
 unsigned long encoder_counter = 0;
 
@@ -80,15 +81,16 @@ void setup() {
 }
 
 void loop() {
+  unsigned long current_time = micros();
   if (waiting_for_start) {
     int reading = digitalRead(PIN_START_IN);
     digitalWrite(LED_BUILTIN, reading);
 
     if (reading != START_last_state) {
-      START_last_change_time = micros();
+      START_last_change_time = current_time;
     }
 
-    if ((micros() - START_last_change_time) > debounce_delay) {
+    if ((current_time - START_last_change_time) > debounce_delay) {
 
       if (reading != START_current_state) {
         START_current_state = reading;
@@ -108,11 +110,11 @@ void loop() {
     int reading = digitalRead(PIN_ENCODER_PULSE);
 
     if (reading != ENCODER_last_state) {
-      ENCODER_last_change_time = micros();
+      ENCODER_last_change_time = current_time;
     }
 
     // compare the buttonState to its previous state
-    if ((micros() - ENCODER_last_change_time) > debounce_delay) {
+    if ((current_time - ENCODER_last_change_time) > debounce_delay) {
       // if the state has changed, increment the counter
 
       if (reading != ENCODER_current_state) {
