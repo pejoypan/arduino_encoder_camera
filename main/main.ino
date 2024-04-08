@@ -1,6 +1,3 @@
-/*
-
-*/
 
 // this constant won't change:
 const int PIN_ENCODER_PULSE = 2;  // the pin that the pushbutton is attached to
@@ -146,24 +143,27 @@ void loop() {
       digitalWrite(LED_BUILTIN, LOW);
     } else if (encoder_counter == T) {
       encoder_counter = 0;
+      T_counter++;
 
-      if (delay_camera1_on > T) {
-        delay_camera1_on -= T;
-      }
-      if (delay_camera1_off > T) {
-        delay_camera1_off -= T;
-      }
-      if (delay_camera2_on > T) {
-        delay_camera2_on -= T;
-      }
-      if (delay_camera2_off > T) {
-        delay_camera2_off -= T;
-      }
-      if (delay_output_on > T) {
-        delay_output_on -= T;
-      }
-      if (delay_output_off > T) {
-        delay_output_off -= T;
+      if (T_counter < 100) {
+        if (delay_camera1_on > T) {
+          delay_camera1_on -= T;
+        }
+        if (delay_camera1_off > T) {
+          delay_camera1_off -= T;
+        }
+        if (delay_camera2_on > T) {
+          delay_camera2_on -= T;
+        }
+        if (delay_camera2_off > T) {
+          delay_camera2_off -= T;
+        }
+        if (delay_output_on > T) {
+          delay_output_on -= T;
+        }
+        if (delay_output_off > T) {
+          delay_output_off -= T;
+        }
       }
     }
 
