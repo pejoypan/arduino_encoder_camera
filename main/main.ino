@@ -1,3 +1,8 @@
+#include <Arduino.h>
+#include <U8g2lib.h>
+#include <Wire.h>
+
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8;
 
 // this constant won't change:
 const int PIN_ENCODER_PULSE = 2;  // the pin that the pushbutton is attached to
@@ -75,6 +80,32 @@ void setup() {
 
   // for debug use
   // pinMode(PIN_DEBUG, OUTPUT);
+
+
+  // display
+  u8x8.begin();
+  u8x8.setFont(u8x8_font_8x13B_1x2_f);
+  // u8x8.setFont(u8x8_font_7x14_1x2_f );
+
+  char str_T[8];
+  snprintf(str_T, sizeof(str_T), "T: %d", T);
+  u8x8.drawString(0, 0, str_T);
+
+  char str_dbc[10];
+  snprintf(str_dbc, sizeof(str_dbc), "dbc: %dus", debounce_delay);
+  u8x8.drawString(8, 0, str_dbc);
+
+  char str_delay1[17];
+  snprintf(str_delay1, sizeof(str_delay1), "dly1: %d/%d", delay_camera1_on, delay_camera1_off);
+  u8x8.drawString(0, 2, str_delay1);
+
+  char str_delay2[17];
+  snprintf(str_delay2, sizeof(str_delay2), "dly2: %d/%d", delay_camera2_on, delay_camera2_off);
+  u8x8.drawString(0, 4, str_delay2);
+
+  char str_output[17];
+  snprintf(str_output, sizeof(str_output), "out: %d/%d", delay_output_on, delay_output_off);
+  u8x8.drawString(0, 6, str_output);
 }
 
 void loop() {
