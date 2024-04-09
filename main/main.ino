@@ -52,6 +52,90 @@ unsigned long encoder_counter = 0;
 
 bool waiting_for_start = true;
 
+const char* str_title = "High-speed I/O";
+const char* str_key_T = "T   :";
+const char* str_key_debounce = "dbc :";
+const char* str_unit_debounce = "us";
+const char* str_key_keep = "keep:";
+const char* str_key_delay1 = "cam1:";
+const char* str_key_delay2 = "cam2:";
+const char* str_key_out = "out :";
+const char* str_slash = "/";
+
+char str_value_T[5];
+char str_value_dbc[5];
+char str_value_keep[5];
+char str_value_delay1_on[6];
+char str_value_delay1_off[6];
+char str_value_delay2_on[6];
+char str_value_delay2_off[6];
+char str_value_out_on[6];
+char str_value_out_off[6];
+
+void display_initial_key() {
+  u8x8.drawString(0, 0, str_title); 
+  u8x8.drawString(0, 1, str_key_T);
+  u8x8.drawString(0, 2, str_key_debounce);
+  u8x8.drawString(14, 2, str_unit_debounce);
+  u8x8.drawString(0, 3, str_key_keep);
+  u8x8.drawString(0, 4, str_key_delay1);
+  u8x8.drawString(0, 5, str_key_delay2);
+  u8x8.drawString(0, 6, str_key_out);
+  u8x8.drawString(10, 4, str_slash);
+  u8x8.drawString(10, 5, str_slash);
+  u8x8.drawString(10, 6, str_slash);
+}
+
+void refresh_value_T() {
+  snprintf(str_value_T, sizeof(str_value_T), "%04d", T);
+  u8x8.drawString(8, 1, str_value_T);
+}
+
+void refresh_value_dbc() {
+  snprintf(str_value_dbc, sizeof(str_value_dbc), "%04d", debounce_delay);
+  u8x8.drawString(8, 2, str_value_dbc);
+}
+
+void refresh_value_keep() {
+  snprintf(str_value_keep, sizeof(str_value_keep), "%04d", high_keep_pulse_count);
+  u8x8.drawString(8, 3, str_value_keep);
+}
+
+void refresh_value_delay1() {
+  snprintf(str_value_delay1_on, sizeof(str_value_delay1_on), "%05d", delay_camera1_on);
+  u8x8.drawString(5, 4, str_value_delay1_on);
+  snprintf(str_value_delay1_off, sizeof(str_value_delay1_off), "%05d", delay_camera1_off);
+  u8x8.drawString(11, 4, str_value_delay1_off);
+}
+
+void refresh_value_delay2() {
+  snprintf(str_value_delay2_on, sizeof(str_value_delay2_on), "%05d", delay_camera2_on);
+  u8x8.drawString(5, 5, str_value_delay2_on);
+  snprintf(str_value_delay2_off, sizeof(str_value_delay2_off), "%05d", delay_camera2_off);
+  u8x8.drawString(11, 5, str_value_delay2_off);
+}
+
+void refresh_value_out() {
+  snprintf(str_value_out_on, sizeof(str_value_out_on), "%05d", delay_output_on);
+  u8x8.drawString(5, 6, str_value_out_on);
+  snprintf(str_value_out_off, sizeof(str_value_out_off), "%05d", delay_output_off);
+  u8x8.drawString(11, 6, str_value_out_off);
+}
+
+void display_all_value() {
+  refresh_value_T();
+  refresh_value_dbc();
+  refresh_value_keep();
+  refresh_value_delay1();
+  refresh_value_delay2();
+  refresh_value_out();
+}
+
+void display_initial() {
+  display_initial_key();
+  display_all_value();
+}
+
 void setup() {
   // initialize the button pin as a input:
   pinMode(PIN_ENCODER_PULSE, INPUT);
@@ -84,28 +168,8 @@ void setup() {
 
   // display
   u8x8.begin();
-  u8x8.setFont(u8x8_font_8x13B_1x2_f);
-  // u8x8.setFont(u8x8_font_7x14_1x2_f );
-
-  char str_T[8];
-  snprintf(str_T, sizeof(str_T), "T: %d", T);
-  u8x8.drawString(0, 0, str_T);
-
-  char str_dbc[10];
-  snprintf(str_dbc, sizeof(str_dbc), "dbc: %dus", debounce_delay);
-  u8x8.drawString(8, 0, str_dbc);
-
-  char str_delay1[17];
-  snprintf(str_delay1, sizeof(str_delay1), "dly1: %d/%d", delay_camera1_on, delay_camera1_off);
-  u8x8.drawString(0, 2, str_delay1);
-
-  char str_delay2[17];
-  snprintf(str_delay2, sizeof(str_delay2), "dly2: %d/%d", delay_camera2_on, delay_camera2_off);
-  u8x8.drawString(0, 4, str_delay2);
-
-  char str_output[17];
-  snprintf(str_output, sizeof(str_output), "out: %d/%d", delay_output_on, delay_output_off);
-  u8x8.drawString(0, 6, str_output);
+  u8x8.setFont(u8x8_font_amstrad_cpc_extended_f);
+  display_initial();
 }
 
 void loop() {
